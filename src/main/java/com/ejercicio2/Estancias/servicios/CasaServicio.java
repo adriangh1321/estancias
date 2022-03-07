@@ -1,7 +1,7 @@
 package com.ejercicio2.Estancias.servicios;
 
 import com.ejercicio2.Estancias.entidades.Casa;
-import com.ejercicio2.Estancias.entidades.Familia;
+import com.ejercicio2.Estancias.entidades.Propietario;
 import com.ejercicio2.Estancias.entidades.Foto;
 import com.ejercicio2.Estancias.errores.ErrorServicio;
 import com.ejercicio2.Estancias.repositorios.CasaRepositorio;
@@ -23,13 +23,13 @@ public class CasaServicio {
     private CasaRepositorio casaRepositorio;
     
     @Autowired
-    private FamiliaServicio familiaServicio;
+    private PropietarioServicio propietarioServicio;
     
     @Autowired
     private FotoServicio fotoServicio;
 
     @Transactional
-    public Casa crearCasa(String idFamilia,
+    public Casa crearCasa(String idPropietario,
             String calle,
             Integer numero,
             String codPostal,
@@ -45,8 +45,8 @@ public class CasaServicio {
             MultipartFile archivo) throws ErrorServicio {
         validarCasa(calle, numero, codPostal, ciudad, pais, fechaDesde, fechaHasta, minDias, maxDias, precio, tipoVivienda);
         validarDescripcion(descripcion);
-        Familia familia=familiaServicio.buscarFamiliaPorId(idFamilia);
-        if (familia!=null) {
+        Propietario propietario=propietarioServicio.buscarPropietarioPorId(idPropietario);
+        if (propietario!=null) {
             Casa casa= new Casa();
             casa.setCalle(calle);
             casa.setNumero(numero);
@@ -63,10 +63,10 @@ public class CasaServicio {
             Foto foto=fotoServicio.guardarFoto(archivo);
             casa.setFoto(foto);
             casa.setAlta(true);
-            familia.setCasa(casa);
+            propietario.setCasa(casa);
             return casaRepositorio.save(casa);
         }else{
-            throw new ErrorServicio("La familia no fue encontrada");
+            throw new ErrorServicio("El propietario no fue encontrado");
         }
     }
 
@@ -192,7 +192,10 @@ public class CasaServicio {
                                 
             }
             Foto foto = fotoServicio.actualizarFoto(idFoto, archivo);
-            casa.setFoto(foto);
+            if (foto!=null) {
+             casa.setFoto(foto);   
+            }
+            
             return casaRepositorio.save(casa);
         }else{
             throw new ErrorServicio("Esa casa no se encuentra");
@@ -254,6 +257,10 @@ public class CasaServicio {
         if (fechaHasta.equals(fechaDesde)) {
             throw new ErrorServicio("El alquiler no puede ser menor a dos dias");
         }
+   }
+   @Transactional(readOnly=true)
+   public List<Casa> listarCasas(){
+       return casaRepositorio.findAll();
    }
 
 }

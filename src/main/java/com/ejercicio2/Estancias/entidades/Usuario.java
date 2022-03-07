@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
@@ -38,6 +39,9 @@ public class Usuario {
     
     @Enumerated(EnumType.STRING)
     protected Rol rol;
+    
+    @OneToOne
+    private Foto foto;
     
     protected Boolean alta;
 
@@ -103,6 +107,14 @@ public class Usuario {
 
     public void setAlta(Boolean alta) {
         this.alta = alta;
+    }
+
+    public Foto getFoto() {
+        return foto;
+    }
+
+    public void setFoto(Foto foto) {
+        this.foto = foto;
     }
     
     

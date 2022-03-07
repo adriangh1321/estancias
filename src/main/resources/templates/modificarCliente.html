@@ -12,6 +12,12 @@
 
 <body>
     <h2>Modificar cliente</h2>
+    <div class="text-center">
+
+        <img th:if="${cliente.foto != null}" class="img-thumbnail" th:src="${'/foto/usuario/' + cliente.id}" alt="">
+        <img th:if="${cliente.foto == null}" class="img-thumbnail" src="/img/usuariobasico.png" alt="">
+        
+    </div>
 
     <div class="container m-5">
 
@@ -30,7 +36,7 @@
 
     </div>
 
-    <form th:action="@{/usuario/modificarUsuario/__${cliente.id}__}" method="POST" class="row g-3">
+    <form th:action="@{/usuario/modificarUsuario/__${cliente.id}__}" method="POST" class="row g-3" enctype="multipart/form-data">
         <!--DATOS DEL USUARIO-->
         <input type="hidden" th:value="${cliente.rol}" name="rol">
 
@@ -48,6 +54,10 @@
             <input type="email" name="email" th:value="${cliente.email}"class="form-control" id="validationDefault01"  required>
         </div>
       
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Ingrese una foto del cliente</label>
+            <input class="form-control" type="file" id="formFile" name="archivo">
+        </div>
 
 
         <!--DATOS DEL CLIENTE -->
@@ -105,6 +115,8 @@
         </div>
         <div class="col-12">
             <a class="btn btn-primary" th:href="@{/inicio}" role="button">Volver al inicio</a>
+            <a type="button" th:href="@{/usuario/claveUsuario/__${cliente.id}__}" class="btn btn-primary">Cambiar clave</a>
+
         </div>
 
     </form>

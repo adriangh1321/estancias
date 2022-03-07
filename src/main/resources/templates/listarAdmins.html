@@ -40,40 +40,33 @@
                     <th scope="col">Id</th>
                     <th scope="col">Alias</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Edad mínima</th>
-                    <th scope="col">Edad máxima</th>
-                    <th scope="col">Número de hijos</th>
+                    <th scope="col">Foto</th>
                     <th scope="col">Activo?</th>
                     <th scope="col">Acciones</th>
                 </tr>
             </thead>
-            <tbody th:each="familia : ${familias}">
+            <tbody th:each="usuario : ${usuarios}">
                 <tr>
-                    <th scope="row" th:text="${familia.id}"></th>
-                    <th scope="row" th:text="${familia.alias}"></th>
-                    <td th:text="${familia.email}"></td>
-                    <th scope="row" th:text="${familia.nombre}"></th>
-                    <td th:text="${familia.edadMin}"></td>
-                    <td th:text="${familia.edadMax}"></td>
-                    <td th:text="${familia.numHijos}"></td>
-                    <td>
-                        <i th:if="${familia.alta}" class="fa fa-circle text-success"></i>
-                        <i th:unless="${familia.alta}" class="fa fa-circle" style="color:red;"></i>
+                    <th scope="row" th:text="${usuario.id}"></th>
+                    <th scope="row" th:text="${usuario.alias}"></th>
+                    <td th:text="${usuario.email}"></td>
+                    <td><img th:if="${usuario.foto != null}" class="img-fluid rounded-circle"
+                            th:src="${'/foto/usuario/' + usuario.id}" alt="">
+                        <img th:if="${usuario.foto == null}" class="img-fluid rounded-circle"
+                            src="/img/usuariobasico.png" alt="">
                     </td>
                     <td>
-                        <a th:href="@{/usuario/alta/__${familia.id}__/__${familia.rol}__}"><i
+                        <i th:if="${usuario.alta}" class="fa fa-circle text-success"></i>
+                        <i th:unless="${usuario.alta}" class="fa fa-circle" style="color:red;"></i>
+                    </td>
+                    <td>
+                        <a th:href="@{/usuario/alta/__${usuario.id}__/__${usuario.rol}__}"><i
                                 class="fa fa-arrow-up"></i></a>
-                        
-                        <a th:href="@{/usuario/baja/__${familia.id}__/__${familia.rol}__}"><i class="fa fa-ban"></i></a>
-                        
-                                <a th:href="@{/usuario/modificarFamilia/__${familia.id}__}"><i
-                                    class="fas fa-user-edit"></i></a>
-                        
-                        <a th:href="@{/usuario/claveUsuario/__${familia.id}__}"><i class="fas fa-key"></i></a>
-                        <a th:href="@{/casa/guardarCasa/__${familia.id}__}"><i class="fas fa-home"></i></a>
-                        <a th:if="${familia.casa!=null}" th:href="@{/casa/mostrarCasa/__${familia.casa.id}__}"><i class="fas fa-door-open"></i></a>
-                        <a th:if="${familia.casa!=null}" th:href="@{/casa/modificarCasa/__${familia.casa.id}__}"><i class="far fa-edit"></i></a>
+                        <!--FLECHITA-->
+                        <a th:href="@{/usuario/baja/__${usuario.id}__/__${usuario.rol}__}"><i class="fa fa-ban"></i></a>
+                        <a th:href="@{/usuario/modificarUsuario/__${usuario.id}__}"><i class="fas fa-user-edit"></i></a>
+
+
 
                     </td>
                 </tr>
@@ -84,7 +77,7 @@
         <section class="py-5 text-center container">
             <div class="row py-lg-5">
                 <div class="col-lg-6 col-md-8 mx-auto">
-                    <a th:href="@{/}" class="btn btn-primary my-2" id="boton">Volver</a>
+                    <a th:href="@{/inicio}" class="btn btn-primary my-2" id="boton">Volver al inicio</a>
                     </p>
                 </div>
             </div>

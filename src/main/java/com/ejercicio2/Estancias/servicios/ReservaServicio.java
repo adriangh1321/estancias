@@ -90,26 +90,37 @@ public class ReservaServicio {
         }
 
     }
-    
+
     @Transactional
-    public void darBajaReserva(String id) throws ErrorServicio{
-        Reserva reserva =reservaRepositorio.getById(id);
-        if (reserva!=null) {
-            
-           reserva.setAlta(false);
-           reservaRepositorio.save(reserva);
-            
-        }else{
+    public void darBajaReserva(String id) throws ErrorServicio {
+        Reserva reserva = reservaRepositorio.getById(id);
+        if (reserva != null) {
+
+            reserva.setAlta(false);
+            reservaRepositorio.save(reserva);
+
+        } else {
             throw new ErrorServicio("Esa reserva no existe");
         }
-        
+
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reserva> listarReservasPorCliente(String idCliente) {
+        List<Reserva> reservas = reservaRepositorio.listarReservasPorCliente(idCliente);
+        return reservas;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reserva> listarReservas() {
+        List<Reserva> reservas = reservaRepositorio.findAll();
+        return reservas;
     }
     
-   @Transactional(readOnly=true)
-   public List<Reserva> listarReservasPorCliente(String idCliente){
-       List<Reserva> reservas=reservaRepositorio.listarReservasPorCliente(idCliente);
-       return reservas;
-   }
-    
-    
+    @Transactional(readOnly = true)
+    public List<Reserva> listarReservasPorPropietario(String idPropietario) {
+        List<Reserva> reservas = reservaRepositorio.listarReservasPorPropietario(idPropietario);
+        return reservas;
+    }
+
 }

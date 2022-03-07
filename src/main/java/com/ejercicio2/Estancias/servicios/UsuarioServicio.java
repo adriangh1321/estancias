@@ -1,7 +1,8 @@
 package com.ejercicio2.Estancias.servicios;
 
 import com.ejercicio2.Estancias.entidades.Cliente;
-import com.ejercicio2.Estancias.entidades.Familia;
+import com.ejercicio2.Estancias.entidades.Propietario;
+import com.ejercicio2.Estancias.entidades.Foto;
 import com.ejercicio2.Estancias.entidades.Usuario;
 import com.ejercicio2.Estancias.enumeraciones.Rol;
 import com.ejercicio2.Estancias.errores.ErrorServicio;
@@ -13,8 +14,11 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UsuarioServicio implements UserDetailsService {
@@ -32,21 +37,24 @@ public class UsuarioServicio implements UserDetailsService {
     private UsuarioRepositorio ur;
 
     @Autowired
-    private FamiliaServicio familiaServicio;
+    private PropietarioServicio propietarioServicio;
 
     @Autowired
     private ClienteServicio clienteServicio;
+
+    @Autowired
+    private FotoServicio fotoServicio;
 
     @Transactional
     public Usuario crearUsuario(String alias,
             String email,
             String clave,
             Rol rol,
-            //PARAMETROS DE FAMILIA
-            String nombreFamilia,
-            Integer edadMin,
-            Integer edadMax,
-            Integer numHijos,
+            MultipartFile archivo,
+            //PARAMETROS DE PROPIETARIO
+            String nombrePropietario,
+            String descripcion,
+            String telefono,
             //PARAMETROS DE CLIENTE
             String nombreCliente,
             String calle,
@@ -54,6 +62,7 @@ public class UsuarioServicio implements UserDetailsService {
             String codPostal,
             String ciudad,
             String pais
+            
     ) throws ErrorServicio {
 
         validarUsuario(alias, email);
@@ -64,17 +73,19 @@ public class UsuarioServicio implements UserDetailsService {
             throw new ErrorServicio("El usuario ya existe");
         }
 
-        if (rol == Rol.FAMILIA) {
-            Familia familia = familiaServicio.crearFamilia(nombreFamilia, edadMin, edadMax, numHijos);
-            familia.setAlias(alias);
+        if (rol == Rol.PROPIETARIO) {
+            Propietario propietario = propietarioServicio.crearPropietario(nombrePropietario,descripcion,telefono);
+            propietario.setAlias(alias);
             String encriptado = new BCryptPasswordEncoder().encode(clave);
-            familia.setClave(encriptado);
-            familia.setEmail(email);
-            familia.setFechaAlta(new Date());
-            familia.setRol(rol);
-            familia.setAlta(Boolean.TRUE);
+            propietario.setClave(encriptado);
+            propietario.setEmail(email);
+            propietario.setFechaAlta(new Date());
+            propietario.setRol(rol);
+            propietario.setAlta(Boolean.TRUE);
+            Foto foto = fotoServicio.guardarFoto(archivo);
+            propietario.setFoto(foto);
 
-            return ur.save(familia);
+            return ur.save(propietario);
 
         }
         // VER EL ROL!!!! FALTA MAPEO PORQUE LO GUARDA COMO INTEGER!
@@ -87,6 +98,8 @@ public class UsuarioServicio implements UserDetailsService {
             cliente.setFechaAlta(new Date());
             cliente.setRol(rol);
             cliente.setAlta(Boolean.TRUE);
+            Foto foto = fotoServicio.guardarFoto(archivo);
+            cliente.setFoto(foto);
 
             return ur.save(cliente);
         } else {
@@ -101,22 +114,26 @@ public class UsuarioServicio implements UserDetailsService {
             String email,
             //            String clave,
             Rol rol,
-            //PARAMETROS DE FAMILIA
-            String nombreFamilia,
-            Integer edadMin,
-            Integer edadMax,
-            Integer numHijos,
+            MultipartFile archivo,
+            //PARAMETROS DE PROPIETARIO
+            String nombrePropietario,
+            String descripcion,
+            String telefono,
             //PARAMETROS DE CLIENTE
             String nombreCliente,
             String calle,
             Integer numero,
             String codPostal,
             String ciudad,
-            String pais) throws ErrorServicio {
+            String pais
+            ) throws ErrorServicio {
 
         validarUsuario(alias, email);
 
         Usuario usuario = ur.getById(id);
+        if (usuario == null) {
+            throw new ErrorServicio("Ese usuario no existe");
+        }
         if (!usuario.getEmail().equals(email)) {
             Usuario usuario1 = ur.buscarUsuarioPorEmail(email);
             if (usuario1 != null) {
@@ -124,16 +141,36 @@ public class UsuarioServicio implements UserDetailsService {
             }
         }
 
-        if (rol == Rol.FAMILIA) {
-            Familia familia = familiaServicio.modificarFamilia(id, nombreFamilia, edadMin, edadMax, numHijos);
-            familia.setAlias(alias);
-            familia.setEmail(email);
-            return ur.save(familia);
+        if (rol == Rol.PROPIETARIO) {
+            Propietario propietario = propietarioServicio.modificarPropietario(id, nombrePropietario, descripcion,telefono);
+            propietario.setAlias(alias);
+            propietario.setEmail(email);
+            String idFoto = null;
+            if (propietario.getFoto() != null) {
+                idFoto = propietario.getFoto().getId();
+
+            }
+            Foto foto = fotoServicio.actualizarFoto(idFoto, archivo);
+            if (foto!=null) {
+               propietario.setFoto(foto); 
+            }
+            
+            return ur.save(propietario);
         }
         if (rol == Rol.CLIENTE) {
             Cliente cliente = clienteServicio.modificarCliente(id, nombreCliente, calle, numero, codPostal, ciudad, pais);
             cliente.setAlias(alias);
             cliente.setEmail(email);
+            String idFoto = null;
+            if (cliente.getFoto() != null) {
+                idFoto = cliente.getFoto().getId();
+
+            }
+            Foto foto = fotoServicio.actualizarFoto(idFoto, archivo);
+            if (foto!=null) {
+              cliente.setFoto(foto);  
+            }
+            
             return ur.save(cliente);
         } else {
             throw new ErrorServicio("El usuario no tiene rol, no fue creado");
@@ -148,6 +185,9 @@ public class UsuarioServicio implements UserDetailsService {
         }
         Usuario usuario = ur.getById(id);
         if (usuario != null) {
+            if (usuario.getAlias().equals("admin")) {
+                throw new ErrorServicio("No puede dar de baja al admin principal");
+            }
             usuario.setFechaBaja(new Date());
             usuario.setAlta(Boolean.FALSE);
             ur.save(usuario);
@@ -163,6 +203,9 @@ public class UsuarioServicio implements UserDetailsService {
         }
         Usuario usuario = ur.getById(id);
         if (usuario != null) {
+            if (usuario.getAlias().equals("admin")) {
+                throw new ErrorServicio("No puede dar de alta al admin principal");
+            }
             usuario.setFechaBaja(null);
             usuario.setAlta(Boolean.TRUE);
             ur.save(usuario);
@@ -211,6 +254,7 @@ public class UsuarioServicio implements UserDetailsService {
             session.setAttribute("usuariosession", usuario);
 
             User user = new User(usuario.getEmail(), usuario.getClave(), permisos);
+
             return user;
         } else {
             return null;
@@ -250,9 +294,83 @@ public class UsuarioServicio implements UserDetailsService {
         }
 
     }
-    
-    @Transactional(readOnly=true)
-    public Usuario buscarUsuarioPorId(String id){
+
+    @Transactional(readOnly = true)
+    public Usuario buscarUsuarioPorId(String id) {
         return ur.getById(id);
     }
+
+    @Transactional
+    public Usuario crearAdmin(String alias,
+            String email,
+            String clave,
+            Rol rol, MultipartFile archivo) throws ErrorServicio {
+        validarUsuario(alias, email);
+        validarClave(clave);
+
+        Usuario usuario = ur.buscarUsuarioPorEmail(email);
+        if (usuario != null) {
+            throw new ErrorServicio("El usuario ya existe");
+        }
+
+        if (rol.equals(Rol.ADMIN)) {
+            usuario = new Usuario();
+            usuario.setAlias(alias);
+            usuario.setEmail(email);
+            usuario.setRol(rol);
+            String encriptado = new BCryptPasswordEncoder().encode(clave);
+            usuario.setClave(encriptado);
+            usuario.setFechaAlta(new Date());
+            usuario.setAlta(Boolean.TRUE);
+            Foto foto = fotoServicio.guardarFoto(archivo);
+            usuario.setFoto(foto);
+            return ur.save(usuario);
+        } else {
+            throw new ErrorServicio("No tienes permiso para realizar esta acción");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> listarAdmins() {
+        return ur.findAllByRol(Rol.ADMIN);
+    }
+
+    @Transactional
+    public Usuario modificarAdmin(String id,
+            String alias,
+            String email, MultipartFile archivo
+    ) throws ErrorServicio {
+
+        validarUsuario(alias, email);
+
+        Usuario usuario = ur.getById(id);
+        if (usuario == null) {
+            throw new ErrorServicio("Ese usuario no existe");
+        }
+        if (!usuario.getEmail().equals(email)) {
+            Usuario usuario1 = ur.buscarUsuarioPorEmail(email);
+            if (usuario1 != null) {
+                throw new ErrorServicio("El usuario ya existe");
+            }
+        }
+        if (usuario.getAlias().equals("admin")) {
+            usuario.setEmail(email);
+        } else {
+            usuario.setAlias(alias);
+            usuario.setEmail(email);
+        }
+        String idFoto = null;
+        if (usuario.getFoto() != null) {
+            idFoto = usuario.getFoto().getId();
+
+        }
+        Foto foto = fotoServicio.actualizarFoto(idFoto, archivo);
+        if (foto!=null) {
+         usuario.setFoto(foto);   
+        }
+        
+
+        return ur.save(usuario);
+    }
+
 }

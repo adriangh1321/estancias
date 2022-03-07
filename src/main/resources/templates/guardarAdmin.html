@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <h2>Guardar cliente</h2>
+    <h2>Guardar admin</h2>
 
     <div class="container m-5">
 
@@ -30,10 +30,10 @@
 
     </div>
 
-    <form th:action="@{/usuario/guardarUsuario}" method="POST" class="row g-3">
+    <form th:action="@{/usuario/guardarAdmin}" method="POST" class="row g-3">
 
         <!--DATOS DEL USUARIO-->
-        <input type="hidden" th:value="${rol}" name="rol">
+        <input type="hidden" th:value="${session.usuariosession.rol}" name="rol">
 
         <div class="col-md-4">
             <label for="validationDefaultUsername" class="form-label">Alias</label>
@@ -56,27 +56,8 @@
         </div>
 
 
-        <!--DATOS DE LA FAMILIA -->
+        
 
-        <div class="col-md-4">
-            <label for="validationDefault01" class="form-label">Nombre</label>
-            <input type="text" name="nombreFamilia" class="form-control" id="validationDefault01"  required>
-        </div>
-        <div class="col-md-4">
-            <label for="validationDefault02" class="form-label">Edad mínima</label>
-            <input type="number" name="edadMin" class="form-control" id="validationDefault02"  required>
-        </div>
-
-        <div class="col-md-4">
-            <label for="validationDefault02" class="form-label">Edad máxima</label>
-            <input type="number" name="edadMax" class="form-control" id="validationDefault02"  required>
-        </div>
-
-        <div class="col-md-3">
-            <label for="validationDefault05" class="form-label">Número de hijos</label>
-            <input type="number" name="numHijos" class="form-control" id="validationDefault05" required>
-        </div>
-      
         <div class="col-12">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox"  id="invalidCheck2" required>

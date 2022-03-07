@@ -11,9 +11,10 @@
 </head>
 
 <body>
-    <a type="button" th:href="@{/cliente}"class="btn btn-primary">Cliente</a>
-    <a type="button" th:href="@{/familia}"class="btn btn-primary">Familia</a>
-    <a type="button" th:href="@{/login}"class="btn btn-primary">Ingresar</a>
+    <a type="button" th:href="@{/usuario/guardarCliente}"class="btn btn-primary">Registrar cliente</a>
+    <a type="button" th:href="@{/usuario/guardarPropietario}"class="btn btn-primary">Registrar propietario</a>
+    <a th:if="${session.usuariosession==null}" type="button" th:href="@{/login}"class="btn btn-primary">Ingresar</a>
+    <a th:unless="${session.usuariosession==null}" type="button" th:href="@{/inicio}"class="btn btn-primary">Inicio</a>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"

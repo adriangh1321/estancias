@@ -11,7 +11,14 @@
 </head>
 
 <body>
-    <h2>Modificar familia</h2>
+    <h2>Modificar propietario</h2>
+    <div class="text-center">
+
+        <img th:if="${propietario.foto != null}" class="img-thumbnail" th:src="${'/foto/usuario/' + propietario.id}"
+            alt="">
+        <img th:if="${propietario.foto == null}" class="img-thumbnail" src="/img/usuariobasico.png" alt="">
+
+    </div>
 
     <div class="container m-5">
 
@@ -30,52 +37,51 @@
 
     </div>
 
-    <form th:action="@{/usuario/modificarUsuario/__${familia.id}__}" method="POST" class="row g-3">
+    <form th:action="@{/usuario/modificarUsuario/__${propietario.id}__}" method="POST" class="row g-3"
+        enctype="multipart/form-data">
         <!--DATOS DEL USUARIO-->
-        <input type="hidden" th:value="${familia.rol}" name="rol">
+        <input type="hidden" th:value="${propietario.rol}" name="rol">
 
         <div class="col-md-4">
             <label for="validationDefaultUsername" class="form-label">Alias</label>
             <div class="input-group">
                 <span class="input-group-text" id="inputGroupPrepend2">@</span>
-                <input type="text" name="alias" th:value="${familia.alias}"class="form-control" id="validationDefaultUsername"
-                    aria-describedby="inputGroupPrepend2" required>
+                <input type="text" name="alias" th:value="${propietario.alias}" class="form-control"
+                    id="validationDefaultUsername" aria-describedby="inputGroupPrepend2" required>
             </div>
         </div>
 
         <div class="col-md-4">
             <label for="validationDefault01" class="form-label">Email</label>
-            <input type="email" name="email" th:value="${familia.email}"class="form-control" id="validationDefault01"  required>
+            <input type="email" name="email" th:value="${propietario.email}" class="form-control"
+                id="validationDefault01" required>
         </div>
-      
 
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Ingrese una foto del propietario</label>
+            <input class="form-control" type="file" id="formFile" name="archivo">
+        </div>
 
         <!--DATOS DEL CLIENTE -->
-        <input type="hidden" name="id" th:value="${familia.id}">
+        <input type="hidden" name="id" th:value="${propietario.id}">
 
         <div class="col-md-4">
             <label for="validationDefault01" class="form-label">Nombre</label>
-            <input type="text" name="nombreFamilia" th:value="${familia.nombre}" class="form-control"
+            <input type="text" name="nombrePropietario" th:value="${propietario.nombre}" class="form-control"
                 id="validationDefault01" required>
         </div>
         <div class="col-md-4">
-            <label for="validationDefault02" class="form-label">Edad mínima</label>
-            <input type="number" name="edadMin" th:value="${familia.edadMin}" class="form-control" id="validationDefault02"
-                required>
+            <label for="validationDefault02" class="form-label">Teléfono</label>
+            <input type="text" pattern="\d*" maxlength="10" class="form-control" required name="telefono"
+                placeholder="(Sin 15 y código de area sin 0, solo números) " th:value="${propietario.telefono}">
+
         </div>
 
-        <div class="col-md-4">
-            <label for="validationDefault02" class="form-label">Edad máxima</label>
-            <input type="number" name="edadMax" th:value="${familia.edadMax}" class="form-control"
-                id="validationDefault02" required>
+        <div class="col-md-6">
+            <label for="validationDefault03" class="form-label">Descripcion</label>
+            <textarea type="text" name="descripcion" class="form-control" id="validationDefault03"
+                placeholder="Descripcion" maxlength="500" rows="10" required th:text="${propietario.descripcion}"> </textarea>
         </div>
-
-        <div class="col-md-3">
-            <label for="validationDefault05" class="form-label">Número de hijos</label>
-            <input type="number" name="numHijos" th:value="${familia.numHijos}" class="form-control"
-                id="validationDefault05" required>
-        </div>
-            
 
         <div class="col-12">
             <button class="btn btn-primary" type="submit">Enviar</button>

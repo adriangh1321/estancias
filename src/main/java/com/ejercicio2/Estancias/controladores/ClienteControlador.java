@@ -12,6 +12,7 @@ import com.ejercicio2.Estancias.servicios.ClienteServicio;
 import com.ejercicio2.Estancias.servicios.UsuarioServicio;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ public class ClienteControlador {
 
     @Autowired
     private ClienteServicio clienteServicio;
-    
+
     @Autowired
     private UsuarioServicio usuarioServicio;
 
@@ -36,13 +37,12 @@ public class ClienteControlador {
         return "cliente.html";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/listarClientes")
     public String listarClientes(ModelMap modelo) {
         List<Cliente> clientes = clienteServicio.listarClientes();
         modelo.addAttribute("clientes", clientes);
         return "listarClientes.html";
     }
-
-    
 
 }

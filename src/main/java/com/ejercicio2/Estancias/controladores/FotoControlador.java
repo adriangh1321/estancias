@@ -2,7 +2,9 @@
 package com.ejercicio2.Estancias.controladores;
 
 import com.ejercicio2.Estancias.entidades.Casa;
+import com.ejercicio2.Estancias.entidades.Usuario;
 import com.ejercicio2.Estancias.servicios.CasaServicio;
+import com.ejercicio2.Estancias.servicios.UsuarioServicio;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class FotoControlador {
     @Autowired
     private CasaServicio casaServicio;
     
+    @Autowired
+    private UsuarioServicio usuarioServicio;
+    
     @GetMapping("/casa/{id}")
     public ResponseEntity<byte[]> foto(@PathVariable String id){
         try {
@@ -38,4 +43,26 @@ public class FotoControlador {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<byte[]> fotoUsuario(@PathVariable String id){
+        try {
+            Usuario usuario =usuarioServicio.buscarUsuarioPorId(id);
+            if (usuario.getFoto()==null) {
+                throw new Exception("La casa no tiene foto asignada");
+            }
+            byte [] foto=usuario.getFoto().getContenido();
+            HttpHeaders headers =new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+           
+            return new ResponseEntity<>(foto,headers,HttpStatus.OK);
+        } catch (Exception e) {
+            Logger.getLogger(FotoControlador.class.getName()).log(Level.SEVERE, null, e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    
+    
+    
 }

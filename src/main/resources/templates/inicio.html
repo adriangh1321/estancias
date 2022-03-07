@@ -21,34 +21,41 @@
         <a class="btn btn-primary" sec:authorize="hasRole('CLIENTE')"
             th:href="@{/usuario/modificarCliente/__${session.usuariosession.id}__}">Modificar mis datos</a>
     </div>
-    <!-- <div class="container m-5" >
-        <a th:if="${session.usuariosession.casa=null}" class="btn btn-primary" sec:authorize="hasRole('FAMILIA')" th:href="@{/casa/guardarCasa/__${session.usuariosession.id}__}">Guardar casa</a>
-        <a class="btn btn-primary" sec:authorize="hasRole('FAMILIA')" th:href="@{/casa/mostrarCasa/__${session.usuariosession.casa.id}__}">Mostrar casa</a>
-        <a class="btn btn-primary" sec:authorize="hasRole('FAMILIA')" th:href="@{/usuario/modificarFamilia/__${session.usuariosession.id}__}">Modificar mis datos</a>
-    </div> -->
+
 
     <div class="container m-5">
-        <a th:if="${session.usuariosession.casa==null}" class="btn btn-primary" sec:authorize="hasRole('FAMILIA')"
+        <a th:if="${session.usuariosession.casa==null}" class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
             th:href="@{/casa/guardarCasa/__${session.usuariosession.id}__}">
             Guardar Casa</a>
 
 
-        <a th:unless="${session.usuariosession.casa==null}" class="btn btn-primary" sec:authorize="hasRole('FAMILIA')"
+        <a th:unless="${session.usuariosession.casa==null}" class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
             th:href="@{/casa/mostrarCasa/{id}(id=${session.usuariosession.casa.id})}">
             Mostrar casa</a>
 
-        <!-- <div th:each="item : ${items}">
-            <a th:href="@{'/pathvars/single/' + ${item.id}}">
-                <span th:text="${item.name}"></span>
-            </a>
-        </div> -->
+        <a th:unless="${session.usuariosession.casa==null}" class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
+            th:href="@{/reserva/listarReservasPorPropietario/{id}(id=${session.usuariosession.id})}">
+            Mostrar reserva</a>
 
 
+        <a class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
+            th:href="@{/usuario/modificarPropietario/__${session.usuariosession.id}__}">
+            Modificar Propietario</a>
+    </div>
 
-
-        <a class="btn btn-primary" sec:authorize="hasRole('FAMILIA')"
-            th:href="@{/usuario/modificarFamilia/__${session.usuariosession.id}__}">
-            Modificar Familia</a>
+    <div class="container m-5">
+        <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/usuario/guardarAdmin}">Guardar admin</a>
+        <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/usuario/listarAdmins}">Listar
+            admin's</a>
+        <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/cliente/listarClientes}">Listar
+            clientes</a>
+        <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/propietario/listarPropietarios}">Listar
+            propietarios</a>
+        <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/casa/listarCasas}">Listar casas</a>
+        <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/reserva/listarReservas}">Listar
+            reservas</a>
+        <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')"
+            th:href="@{/usuario/modificarUsuario/__${session.usuariosession.id}__}">Modificar mis datos</a>
     </div>
 
     <div class="container m-5">
@@ -68,7 +75,8 @@
 
     </div>
     <div>
-        <h2 th:if="${session.usuariosession!=null}" th:text="'HOLA , '+ ${session.usuariosession.nombre}">
+        <h2 th:if="${session.usuariosession!=null}"
+            th:text="'HOLA [alias]: '+ ${session.usuariosession.alias +' [email]: '+ session.usuariosession.email}">
         </h2>
         <a class="btn btn-primary" th:href="@{/logout}">Logout</a>
 

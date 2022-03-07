@@ -25,4 +25,12 @@ public interface ReservaRepositorio extends JpaRepository<Reserva, String> {
     
 //    "SELECT * FROM reserva r WHERE r.casa_id=?1 AND  (  (r.fecha_desde BETWEEN ?2 AND ?3) OR (r.fecha_hasta BETWEEN ?2 AND ?3) OR (  (?2 BETWEEN r.fecha_desde AND r.fecha_hasta) AND (?3 BETWEEN r.fecha_desde AND r.fecha_hasta)) ) 
     
+    
+    
+    
+    
+    
+    
+    @Query(value ="SELECT  r.* FROM reserva r INNER JOIN casa c ON r.casa_id=c.id INNER JOIN propietario p ON c.id=p.casa_id WHERE p.id=?;", nativeQuery = true)
+    public List<Reserva> listarReservasPorPropietario(String idPropietario);
 }

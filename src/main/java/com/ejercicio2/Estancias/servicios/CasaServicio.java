@@ -63,7 +63,8 @@ public class CasaServicio {
             Foto foto=fotoServicio.guardarFoto(archivo);
             casa.setFoto(foto);
             casa.setAlta(true);
-            propietario.setCasa(casa);
+            casa.setPropietario(propietario);
+            //propietario.setCasa(casa);
             return casaRepositorio.save(casa);
         }else{
             throw new ErrorServicio("El propietario no fue encontrado");
@@ -262,5 +263,9 @@ public class CasaServicio {
    public List<Casa> listarCasas(){
        return casaRepositorio.findAll();
    }
+   @Transactional(readOnly=true)
+   public List<Casa> listarCasasPorPropietario(String idPropietario){
+       return casaRepositorio.listarCasasPorPropietario(idPropietario);
 
+}
 }

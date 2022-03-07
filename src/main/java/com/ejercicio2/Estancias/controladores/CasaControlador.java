@@ -39,12 +39,12 @@ public class CasaControlador {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_PROPIETARIO','ROLE_ADMIN')")
-    @GetMapping("/mostrarCasa/{id}")
-    public String mostrarCasa(@PathVariable String id, ModelMap modelo) {
-        Casa casa = casaServicio.buscarPorId(id);
+    @GetMapping("/mostrarCasa/{idPropietario}")
+    public String mostrarCasa(@PathVariable String idPropietario, ModelMap modelo) {
+        List<Casa> casas = casaServicio.listarCasasPorPropietario(idPropietario);
 
-        modelo.put("casa", casa);
-        return "mostrarCasa.html";
+        modelo.put("casas", casas);
+        return "listarCasas.html";
     }
 
     @PreAuthorize("hasAnyRole('ROLE_PROPIETARIO')")

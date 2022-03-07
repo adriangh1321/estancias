@@ -1,8 +1,12 @@
 package com.ejercicio2.Estancias.entidades;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 
 import javax.persistence.OneToOne;
 
@@ -20,7 +24,37 @@ public class Propietario extends Usuario {
     private Integer calificacion;
     private String telefono;
 
-    public String getTelefono() {
+
+    @OneToMany(mappedBy = "propietario",fetch =FetchType.EAGER )
+    private List<Casa> casas=new ArrayList();
+
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public List<Casa> getCasas() {
+        return casas;
+    }
+
+    public void setCasas(List<Casa> casas) {
+        this.casas = casas;
+    }
+    
+
+    
+    
+     public String getTelefono() {
         return telefono;
     }
 
@@ -43,33 +77,7 @@ public class Propietario extends Usuario {
     public void setCalificacion(Integer calificacion) {
         this.calificacion = calificacion;
     }
-
-    @OneToOne
-    private Casa casa;
-
-//    public String getId() {
-//        return id;
-//    }
-//
-//    public void setId(String id) {
-//        this.id = id;
-//    }
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     
-
-    public Casa getCasa() {
-        return casa;
-    }
-
-    public void setCasa(Casa casa) {
-        this.casa = casa;
-    }
+    
 
 }

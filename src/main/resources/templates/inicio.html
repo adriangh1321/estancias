@@ -24,16 +24,16 @@
 
 
     <div class="container m-5">
-        <a th:if="${session.usuariosession.casa==null}" class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
+        <a  class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
             th:href="@{/casa/guardarCasa/__${session.usuariosession.id}__}">
             Guardar Casa</a>
 
 
-        <a th:unless="${session.usuariosession.casa==null}" class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
-            th:href="@{/casa/mostrarCasa/{id}(id=${session.usuariosession.casa.id})}">
-            Mostrar casa</a>
+        <a class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
+            th:href="@{/casa/mostrarCasa/__${session.usuariosession.id}__}">
+            Mostrar casas</a>
 
-        <a th:unless="${session.usuariosession.casa==null}" class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
+        <a  class="btn btn-primary" sec:authorize="hasRole('PROPIETARIO')"
             th:href="@{/reserva/listarReservasPorPropietario/{id}(id=${session.usuariosession.id})}">
             Mostrar reserva</a>
 

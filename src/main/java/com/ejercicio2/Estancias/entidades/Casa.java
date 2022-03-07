@@ -3,8 +3,11 @@ package com.ejercicio2.Estancias.entidades;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,6 +39,10 @@ public class Casa {
 
     @Column(length = 1500)
     private String descripcion;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "propietario_id")
+    private Propietario propietario;
 
     private Boolean alta;
 
@@ -158,5 +165,15 @@ public class Casa {
     public void setAlta(Boolean alta) {
         this.alta = alta;
     }
+
+    public Propietario getPropietario() {
+        return propietario;
+    }
+
+    public void setPropietario(Propietario propietario) {
+        this.propietario = propietario;
+    }
+    
+    
 
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -48,4 +49,7 @@ public interface CasaRepositorio extends JpaRepository<Casa, String> {
             + "OR (  (?1 BETWEEN r.fecha_desde AND r.fecha_hasta) AND (?2 BETWEEN r.fecha_desde AND r.fecha_hasta)  )  )AND r.alta= TRUE  )  ) " /*LINEA PARA EXCLUIR LAS CASAS QUE ME VAN ARROJAR LA EXCEPCION DE QUE ESTAN ALQUILADAS */
             + "OR r.casa_id is NULL;", nativeQuery = true)
     public List<Casa> buscarCasasPorFechaDisponible(Date fechaDesde, Date fechaHasta);
+    
+    @Query("SELECT c FROM Casa c WHERE c.propietario.id= :idPropietario")
+    public List<Casa> listarCasasPorPropietario(@Param("idPropietario") String idPropietario);
 }
